@@ -18,6 +18,7 @@ DO $$
 	WHEN 5 THEN resultado = 'D';
 	WHEN 4,3,2,1 THEN resultado = 'E';
 	WHEN 0 THEN resultado = 'F';
+	ELSE RAISE NOTICE 'introduce un valor entre 0 y 10'
 	END CASE;
 	
 	RAISE NOTICE 'La nota es %', resultado;
@@ -31,7 +32,7 @@ END $$ LANGUAGE 'plpgsql';
 DO $$
 	DECLARE 
 	numero INTEGER := 5;
-	i INTEGER :=0;
+	i INTEGER;
 	resultado INTEGER;
 	
 	BEGIN
@@ -48,43 +49,36 @@ END $$ LANGUAGE 'plpgsql';
 */
 
 
-CREATE OR REPLACE FUNCTION conversion_moneda(dolares numeric, tasa_cambio numeric)
-RETURNS numeric AS $$
+CREATE OR REPLACE FUNCTION conversion_moneda(dolares NUMERIC, tasa_cambio NUMERIC)
+RETURNS NUMERIC AS $$
 DECLARE 
-    moneda numeric;
+    moneda NUMERIC;
 BEGIN
     moneda := dolares * tasa_cambio;
     RETURN moneda;
 END $$ LANGUAGE 'plpgsql';
 SELECT conversion_moneda(10, 0.91);
-/*
 
+/*
 4 - Escriba una funcion PL/pgSQL que reciba como parametro el monto de un prestamo,
     su duracion en meses y la tasa de interes, retornando el monto de la cuota a pagar.
-    Aplicar el metodo de amortizacion frances.
+    Aplicar el metodo de amortizacion frances.	
 	
-	
-	[17:40] Pablo García Cervigón Simón
-
-
-
-
-(V *i)/(1-(1+i)^(-N)) <- esta funciona en el ultimo
-
-
-
-
-
-
-
-[17:41] Pablo García Cervigón Simón
-
-
-
+	(V *i)/(1-(1+i)^(-N)) <- esta funciona en el ultimo
+	 C= V / (1-(1/(1+i))^N)/i)
 
 V el monto, i el interes (porcentaje/12) N los meses
-
-
-
-
 */
+CREATE OR REPLACE FUNCTION cuota_a_pagar(monto NUMERIC, meses INTEGER, tasa_interes NUMERIC)
+RETURNS NUMERIC AS $$
+DECLARE 
+	cuota NUMERIC;
+	interes_mensual Numeric;
+	BEGIN 
+		interes_mensual := tasa_interes/12;
+		cuota := monto  / (1-(1/(1+interes_mensual))^meses)/interes_mensual;
+		
+		RETURN cuota;
+END $$ LANGUAGE 'plpgsql';
+
+SELECT cuota_a_pagar(100,36,0.07);
