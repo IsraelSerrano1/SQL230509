@@ -74,9 +74,9 @@ RETURNS NUMERIC AS $$
 DECLARE 
 	cuota NUMERIC;
 	interes_mensual Numeric;
-	BEGIN 
+	BEGIN
 		interes_mensual := tasa_interes/12;
-		cuota := monto  / (1-(1/(1+interes_mensual))^meses)/interes_mensual;
+		cuota := monto  / ((1-(1/(1+interes_mensual)^meses))/interes_mensual);
 		
 		RETURN cuota;
 END $$ LANGUAGE 'plpgsql';
