@@ -64,10 +64,7 @@ SELECT conversion_moneda(10, 0.91);
     su duracion en meses y la tasa de interes, retornando el monto de la cuota a pagar.
     Aplicar el metodo de amortizacion frances.	
 	
-	(V *i)/(1-(1+i)^(-N)) <- esta funciona en el ultimo
 	 C= V / (1-(1/(1+i))^N)/i)
-
-V el monto, i el interes (porcentaje/12) N los meses
 */
 CREATE OR REPLACE FUNCTION cuota_a_pagar(monto NUMERIC, meses INTEGER, tasa_interes NUMERIC)
 RETURNS NUMERIC AS $$
